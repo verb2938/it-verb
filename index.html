@@ -161,6 +161,10 @@
         Next question
     </button>
 
+    <button onclick="resetStats()">
+        Reset statistics
+    </button>
+
 
 <script>
 
@@ -212,9 +216,37 @@ let questions = [];
 
 let questionIndex = 0;
 
-let score = 0;
+// Load previous statistics from the iPhone
+let stats = JSON.parse(
+    localStorage.getItem("italianQuizStats")
+) || {
+    attempted: 0,
+    correct: 0
+};
 
 let answered = false;
+
+function saveStats() {
+    localStorage.setItem(
+        "italianQuizStats",
+        JSON.stringify(stats)
+    );
+}
+
+function resetStats() {
+
+    if (confirm("Reset all statistics?")) {
+
+        stats = {
+            attempted: 0,
+            correct: 0
+        };
+
+        saveStats();
+
+        displayQuestion();
+    }
+}
 
 
 // ========================================================
@@ -446,7 +478,10 @@ function checkAnswer() {
 
     if (correct) {
 
-        score++;
+        stats.attempted++;
+        stats.correct++;
+
+        saveStats();
 
         // Turn selected buttons green
         document.querySelectorAll(".answer-button.selected")
@@ -465,6 +500,9 @@ function checkAnswer() {
 
     else {
 
+        stats.attempted++;
+        saveStats();
+        
         // Wrong selection
         document.querySelectorAll(".answer-button.selected")
             .forEach(button => {
