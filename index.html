@@ -161,7 +161,7 @@
         Next question
     </button>
 
-    <button onclick="resetStats()">
+    <button id="reset-button" onclick="resetStats()">
         Reset statistics
     </button>
 
@@ -231,21 +231,6 @@ function saveStats() {
         "italianQuizStats",
         JSON.stringify(stats)
     );
-}
-
-function resetStats() {
-
-    if (confirm("Reset all statistics?")) {
-
-        stats = {
-            attempted: 0,
-            correct: 0
-        };
-
-        saveStats();
-
-        displayQuestion();
-    }
 }
 
 
@@ -512,6 +497,21 @@ function checkAnswer() {
                 button.disabled = true;
             });
 
+    }
+}
+
+function resetStats() {
+
+    if (confirm("Reset all statistics?")) {
+
+        stats = {
+            attempted: 0,
+            correct: 0
+        };
+
+        saveStats();
+
+        displayQuestion();
     }
 }
 
