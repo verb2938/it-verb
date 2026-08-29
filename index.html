@@ -10,6 +10,7 @@
     <title>Italian Verb Quiz</title>
 
     <style>
+        #button-container {margin-top: 30px;}
 
         body {
             font-family: -apple-system, BlinkMacSystemFont,
@@ -117,7 +118,7 @@
 
             #grid {
                 grid-template-columns:
-                    30px repeat(7, 2px);
+                    140px repeat(7, 30px);
 
                 gap: 3px;
 
@@ -129,15 +130,16 @@
             }
 
             .tense {
-                width:30px;
+                width:140px;
                 font-size: 12px;
+                text-align: right;
                 padding: 0 1px 0 0;
                 //padding-right: 4px;
             }
 
             .answer-button {
                 height: 20px;
-                sidth: 100%;
+                width: 100%;
                 font-size: 16px;
             }
         }
@@ -155,6 +157,8 @@
 
     <div id="grid"></div>
 
+
+    <div id="button-container">
     <button id="check-button" onclick="checkAnswer()">
         Check Answer
     </button>
@@ -166,6 +170,7 @@
     <button id="reset-button" onclick="resetStats()">
         Reset statistics
     </button>
+    </div>
 
 
 <script>
@@ -188,7 +193,7 @@ const PERSONS = [
 const tenses = [
     "infinito",
     "gerundio",
-    "a test of very long text which is definitely going to run into the right wall please",
+    //"a test of very long text which is definitely going to run into the right wall please",
     "participio presente",
     "participio passato",
     "presente indicativo",
