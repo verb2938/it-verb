@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
+    <title>Italian Verb Quiz</title>
+
+    <style>
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont,
+                         "Helvetica Neue", sans-serif;
+            text-align: center;
+            margin: 20px;
+            background: #ffffff;
+        }
+
+        #question {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 25px 0 10px 0;
+        }
+
+        #score {
+            font-size: 18px;
+            margin-bottom: 25px;
+        }
+
+        /*
+         * The grid has:
+         *
+         *   1 column for the tense
+         *   7 columns for io, tu, lui, ...
+         */
+
+        #grid {
+            display: grid;
+
+            grid-template-columns:
+                200px repeat(7, minmax(5px, 50px));
+
+            gap: 1px;
+
+            justify-content: center;
+
+            margin: auto;
+        }
+
+        .person {
+            font-weight: bold;
+            font-size: 17px;
+            padding: 8px 2px;
+        }
+
+        .tense {
+            font-weight: bold;
+            text-align: right;
+            padding: 0px 8px;
+            white-space: nowrap;
+        }
+
+        .answer-button {
+            width: 100%;
+            height: 20px; // button height
+            //padding: 0;
+
+            font-size: 18px;
+
+            border: 1px solid #888;
+            border-radius: 6px;
+
+            background: #f2f2f2;
+        }
+
+        .answer-button:active {
+            background: #ccc;
+        }
+
+        .wrong {
+            background: #ff9999;
+        }
+
+        .correct {
+            background: #90ee90;
+        }
+
+        #next-button {
+            margin-top: 30px;
+
+            font-size: 18px;
+
+            padding: 10px 25px;
+
+            border-radius: 8px;
+            border: 1px solid #888;
+
+            background: #f2f2f2;
+        }
+
+        /*
+         * Make the grid fit better on a phone.
+         */
+
+        @media (max-width: 700px) {
+
+            body {
+                margin: 10px 3px;
+            }
+
+            #question {
+                font-size: 27px;
+            }
+
+            #grid {
+                grid-template-columns:
+                    105px repeat(7, minmax(30px, 1fr));
+
+                gap: 3px;
+
+                width: 100%;
+            }
+
+            .person {
+                font-size: 14px;
+            }
+
+            .tense {
+                font-size: 12px;
+                padding-right: 4px;
+            }
+
+            .answer-button {
+                height: 45px;
+                font-size: 16px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <div id="question"></div>
+
+    <div id="score"></div>
+
+    <div id="grid"></div>
+
+    <button id="check-button" onclick="checkAnswer()">
+        Check Answer
+    </button>
+
+    <button id="next-button" onclick="nextQuestion()">
+        Next question
+    </button>
+
+
+<script>
+
+
+// ========================================================
+// Settings
+// ========================================================
+
+const PERSONS = [
+    "io",
+    "tu",
+    "lui",
+    "noi",
+    "voi",
+    "loro",
+    "-"
+];
+
+const tenses = [
+    "infinito",
+    "gerundio",
+    "participio presente",
+    "participio passato",
+    "presente indicativo",
+    "imperfetto indicativo",
+    "passato remoto",
+    "futuro semplice",
+    "passato prossimo",
+    "trapassato prossimo",
+    "trapassato remoto",
+    "futuro anteriore",
+    "presente congiuntivo",
+    "imperfetto congiuntivo",
+    "passato congiuntivo",
+    "trapassato congiuntivo",
+    "presente condizionale",
+    "passato condizionale",
+    "imperativo"
+    ]
+
+
+// ========================================================
+// Quiz data
+// ========================================================
+
+let questions = [];
+
+// let tenses = [];
+
+let questionIndex = 0;
+
+let score = 0;
+
+let answered = false;
+
+
+// ========================================================
+// Read database.csv
+// ========================================================
+
+fetch("database.csv")
+    .then(response => response.text())
+    .then(text => {
+
+        const lines = text.split(/\r?\n/);
+
+        for (let line of lines) {
+
+            line = line.trim();
+
+            if (!line) {
+                continue;
+            }
+
+            const parts = line.split(";");
+
+            if (parts.length < 4) {
+                continue;
+            }
+
+            const verb = parts[0].trim();
+            const form = parts[1].trim();
+            const person = parts[2].trim();
+            const tense = parts[3].trim();
+
+            questions.push({
+                verb: verb,
+                form: form,
+                person: person,
+                tense: tense
+            });
+
+            if (!tenses.includes(tense)) {
+                tenses.push(tense);
+            }
+        }
+
+        if (questions.length === 0) {
+            alert("No questions found in database.csv");
+            return;
+        }
+
+        // Randomize question order
+        shuffle(questions);
+
+        displayQuestion();
+
+    })
+    .catch(error => {
+
+        alert(
+            "Could not load database.csv.\n\n" +
+            "Make sure database.csv is in the same folder."
+        );
+
+        console.error(error);
+    });
+
+
+// ========================================================
+// Random shuffle
+// ========================================================
+
+function shuffle(array) {
+
+    for (let i = array.length - 1; i > 0; i--) {
+
+        const j = Math.floor(Math.random() * (i + 1));
+
+        [array[i], array[j]] =
+            [array[j], array[i]];
+    }
+}
+
+
+// ========================================================
+// Display question
+// ========================================================
+
+function displayQuestion() {
+
+    answered = false;
+
+    const q = questions[questionIndex];
+
+    document.getElementById("question").textContent =
+        q.form + " (" + q.verb + ")";
+
+    document.getElementById("score").textContent =
+        "Question " +
+        (questionIndex + 1) +
+        " / " +
+        questions.length +
+        "     Score: " +
+        score;
+
+
+    const grid = document.getElementById("grid");
+
+    // Remove old grid
+    grid.innerHTML = "";
+
+
+    // Empty upper-left corner
+    const empty = document.createElement("div");
+
+    grid.appendChild(empty);
+
+
+    // ----------------------------------------------------
+    // Column headings
+    // ----------------------------------------------------
+
+    for (const person of PERSONS) {
+
+        const header = document.createElement("div");
+
+        header.className = "person";
+
+        header.textContent = person;
+
+        grid.appendChild(header);
+    }
+
+
+    // ----------------------------------------------------
+    // Rows
+    // ----------------------------------------------------
+
+    for (const tense of tenses) {
+
+        // Tense label
+        const tenseLabel = document.createElement("div");
+
+        tenseLabel.className = "tense";
+
+        tenseLabel.textContent = tense;
+
+        grid.appendChild(tenseLabel);
+
+
+        // Seven buttons
+        for (const person of PERSONS) {
+
+            const button = document.createElement("button");
+
+            button.className = "answer-button";
+
+            button.textContent = "";
+
+            // button.onclick = function() {
+            //
+            //    checkAnswer(
+            //        tense,
+            //        person,
+            //        button
+            //    );
+
+            //};
+
+            button.dataset.tense = tense;
+            button.dataset.person = person;
+            button.onclick = function() {
+
+                selectAnswer(button);
+
+            };
+
+            grid.appendChild(button);
+        }
+    }
+}
+
+
+// ========================================================
+// Check answer
+// ========================================================
+
+function checkAnswer() {
+
+    const q = questions[questionIndex];
+
+    // Find every CSV line with this verb + form
+    const correctAnswers = questions.filter(
+        x => x.verb === q.verb && x.form === q.form
+    );
+
+    // Get the user's selections
+    const selected = [];
+
+    document.querySelectorAll(".answer-button.selected")
+        .forEach(button => {
+
+            selected.push({
+                tense: button.dataset.tense,
+                person: button.dataset.person
+            });
+
+        });
+
+
+    // Convert both to strings so we can compare sets
+    const correctSet = new Set(
+        correctAnswers.map(
+            x => x.tense + "|||" + x.person
+        )
+    );
+
+    const selectedSet = new Set(
+        selected.map(
+            x => x.tense + "|||" + x.person
+        )
+    );
+
+
+    // Check that the sets are identical
+    const correct =
+        correctSet.size === selectedSet.size &&
+        [...correctSet].every(
+            x => selectedSet.has(x)
+        );
+
+
+    if (correct) {
+
+        score++;
+
+        // Turn selected buttons green
+        document.querySelectorAll(".answer-button.selected")
+            .forEach(button => {
+                button.classList.remove("selected");
+                button.classList.add("correct");
+                button.textContent = "✓";
+                button.disabled = true;
+            });
+
+        answered = true;
+
+        setTimeout(nextQuestion, 600);
+
+    }
+
+    else {
+
+        // Wrong selection
+        document.querySelectorAll(".answer-button.selected")
+            .forEach(button => {
+                button.classList.remove("selected");
+                button.classList.add("wrong");
+                button.textContent = "✗";
+                button.disabled = true;
+            });
+
+    }
+}
+
+function selectAnswer(button) {
+
+    if (answered) {
+        return;
+    }
+
+    button.classList.toggle("selected");
+
+    if (button.classList.contains("selected")) {
+        button.textContent = "✓";
+    }
+    else {
+        button.textContent = "";
+    }
+}
+
+
+// ========================================================
+// Next question
+// ========================================================
+
+function nextQuestion() {
+
+    questionIndex++;
+
+    if (questionIndex >= questions.length) {
+
+        document.getElementById("question").textContent =
+            "Finished!";
+
+        document.getElementById("score").textContent =
+            "Final score: " +
+            score +
+            " / " +
+            questions.length;
+
+        document.getElementById("grid").innerHTML = "";
+
+        document.getElementById("next-button").style.display =
+            "none";
+
+        return;
+    }
+
+    displayQuestion();
+}
+
+
+</script>
+
+</body>
+
+</html>
