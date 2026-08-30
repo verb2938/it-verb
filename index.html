@@ -593,20 +593,33 @@ function checkAnswer() {
     }
 
     else {
+    stats.attempted++;
+    saveStats();
 
-        stats.attempted++;
-        saveStats();
-        
-        // Wrong selection
-        document.querySelectorAll(".answer-button.selected")
-            .forEach(button => {
-                button.classList.remove("selected");
-                button.classList.add("wrong");
-                button.textContent = "✗";
+    // Turn the user's wrong selections red
+    document.querySelectorAll(".answer-button.selected")
+        .forEach(button => {
+            button.classList.remove("selected");
+            button.classList.add("wrong");
+            button.textContent = "✗";
+            button.disabled = true;
+        });
+
+    // Turn all correct answers green
+    document.querySelectorAll(".answer-button")
+        .forEach(button => {
+
+            const key =
+                button.dataset.tense + "|||" +
+                button.dataset.person;
+
+            if (correctSet.has(key)) {
+                button.classList.add("correct");
+                button.textContent = "✓";
                 button.disabled = true;
-            });
-
-    }
+            }
+        });
+}
 }
 
 function resetStats() {
