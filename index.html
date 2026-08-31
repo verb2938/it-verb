@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<!--
+Title and CSS:
+
+
+
+-->
 <head>
     <meta charset="UTF-8">
 
@@ -89,19 +95,6 @@
             background: #90ee90;
         }
 
-        //#next-button {
-        //    margin-top: 30px;
-
-        //    font-size: 18px;
-
-        //    padding: 10px 25px;
-
-        //    border-radius: 8px;
-        //    border: 1px solid #888;
-
-        //    background: #f2f2f2;
-        //}
-
         /*
          * Make the grid fit better on a phone.
          */
@@ -169,7 +162,10 @@
 </head>
 
 
+<!-- all the rest is body -->
 <body>
+
+	<!-- Display the main items, defined below in script-->
 
     <div id="question"></div>
 
@@ -253,7 +249,7 @@ const tenses = [
 
 
 // ========================================================
-// Quiz data
+// Quiz statistics
 // ========================================================
 
 let questions = [];
@@ -265,10 +261,7 @@ let questionIndex = 0;
 // Load previous statistics from the iPhone
 let stats = JSON.parse(
     localStorage.getItem("italianQuizStats")
-) || {
-    attempted: 0,
-    correct: 0
-};
+) || {attempted: 0, correct: 0};
 
 let answered = false;
 
@@ -340,7 +333,7 @@ fetch("database.csv")
 
 
 // ========================================================
-// Random shuffle
+// Random shuffle (used above when reading 'database.csv')
 // ========================================================
 
 function shuffle(array) {
