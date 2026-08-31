@@ -277,7 +277,7 @@ function saveStats() {
 // Read database.csv
 // ========================================================
 
-fetch("database.csv")
+fetch("database.csv", { cache: "no-store" })
     .then(response => response.text())
     .then(text => {
 
