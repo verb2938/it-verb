@@ -1,12 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<!--
-Title and CSS:
 
-
-
--->
 <head>
     <meta charset="UTF-8">
 
@@ -117,25 +112,8 @@ Title and CSS:
                 margin: 0 auto 15px auto;
             }
 
-            #imperative-grid {
-                display: grid;
-                grid-template-columns: repeat(5, 1fr);
-                gap: 3px; /* entry-to-entry gap*/
-                width: 50%; /* width of entire grid */
-                margin: 0 auto 15px auto;
-            }
-
             .special-label {
                 font-size: 11px; /* infinito, gerundio etc*/
-            }
-
-            #grid {
-                grid-template-columns:
-                    140px /* left column */ repeat(6, 30px);
-
-                gap: 3px;
-
-                width: 100%;
             }
 
             .person {
@@ -179,8 +157,6 @@ Title and CSS:
     <!-- <div id="score"></div>-->
 
     <div id="special-grid"></div>
-
-    <div id="imperative-grid"></div>
     
     <div id="indicativo-grid" class="main-grids"></div>
     
@@ -214,6 +190,8 @@ Title and CSS:
 // Settings
 // ========================================================
 
+const TENSES = ['presente indicativo', 'imperfetto indicativo'];
+
 const PERSONS = [
     "io",
     "tu",
@@ -228,38 +206,12 @@ const DISPLAY_PERSONS = {
     loro: ["loro", "Loro", "essi"]
 };
 
-const IMPERATIVE_PERSONS = [
-    "tu",
-    "Lei",
-    "noi",
-    "voi",
-    "Loro"
-];
-
 const SPECIAL_TENSES = [
     "infinito",
     "gerundio",
     "participio presente",
     "participio passato"
 ]; //infinito etc
-
-const tenses = [
-    //"a test of very long text which is definitely going to run into the right wall please",
-    "presente indicativo",
-    "imperfetto indicativo",
-    "passato remoto",
-    "futuro semplice",
-    //"passato prossimo",
-    //"trapassato prossimo",
-    //"trapassato remoto",
-    //"futuro anteriore",
-    //"presente congiuntivo",
-    //"imperfetto congiuntivo",
-    //"passato congiuntivo",
-    //"trapassato congiuntivo",
-    //"presente condizionale",
-    //"passato condizionale"
-    ]; //should delete
     
 const indicativo_tenses = [
 	"presente indicativo",
@@ -292,8 +244,6 @@ const cond_tenses = [
 // Quiz statistics
 // ========================================================
 
-let questions = [];
-
 // let tenses = [];
 
 let questionIndex = 0;
@@ -321,8 +271,10 @@ function displayTest(disp = 'asdftest') {
 
 
 // ========================================================
-// Read database.csv
+// Read database.csv into 'questions' and shuffle it
 // ========================================================
+
+let questions = [];
 
 fetch("database.csv")
     .then(response => response.text())
@@ -356,14 +308,23 @@ fetch("database.csv")
                 tense: tense
             });
         }
+        
+        // only include indicated tenses
+        questions = questions.filter(x => TENSES.includes(x.tense));
 
+		// error message
         if (questions.length === 0) {
-            alert("No questions found in database.csv");
+            alert("No questions found/remaining");
             return;
         }
 
         // Randomize question order
-        shuffle(questions);
+        for (let i = questions.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+	
+			[questions[i], questions[j]] =
+				[questions[j], questions[i]];
+		}
 
         displayQuestion();
 
@@ -378,21 +339,30 @@ fetch("database.csv")
         console.error(error);
     });
 
-// ========================================================
-// Random shuffle (used above when reading 'database.csv')
-// ========================================================
 
-function shuffle(array) {
+function buttonMaker(person, tense, grid) {
+	const button = document.createElement("button");
+	button.className = "answer-button";
+	button.dataset.tense = tense;
+	if (grid == 'congiuntivo-grid') {
+		button.dataset.tense += ' congiuntivo';
+	} else if (grid == 'condizionale-grid') {
+		button.dataset.tense += ' condizionale';
+	}
+	button.dataset.person = person;
 
-    for (let i = array.length - 1; i > 0; i--) {
+	button.onclick = function() {
+		selectAnswer(button);
+	};
+	
+	if (!TENSES.includes(tense)) {
+		button.disabled = true;
+		button.style.backgroundColor = 'black';
+		button.style.cursor = 'not-allowed';
+	}
 
-        const j = Math.floor(Math.random() * (i + 1));
-
-        [array[i], array[j]] =
-            [array[j], array[i]];
-    }
+	return button
 }
-
 
 // ========================================================
 // Display question
@@ -415,34 +385,14 @@ function displayQuestion() {
         "     Score: " +''
         //score;*/
 	
-	//const grid = document.getElementById("grid");
 	const specialGrid = document.getElementById("special-grid");
 	
 	// Remove old grids
-	//grid.innerHTML = "";
 	specialGrid.innerHTML = "";
 	
 	// ----------------------------------------------------
 	// Special forms: infinito, gerundio, participi
 	// ----------------------------------------------------
-
-	function buttonMaker(person, tense, grid) {
-		const button = document.createElement("button");
-		button.className = "answer-button";
-		button.dataset.tense = tense;
-		if (grid == 'congiuntivo-grid') {
-			button.dataset.tense += ' congiuntivo';
-		} else if (grid == 'condizionale-grid') {
-			button.dataset.tense += ' condizionale';
-		}
-		button.dataset.person = person;
-	
-		button.onclick = function() {
-			selectAnswer(button);
-		};
-    
-		return button
-	}
 
 	for (const tense of SPECIAL_TENSES) {
 	
@@ -472,37 +422,8 @@ function displayQuestion() {
 		specialGrid.appendChild(item);
 	}
 
-	// imperative grid
-	const imperativeGrid = document.getElementById("imperative-grid");
-	imperativeGrid.innerHTML = "";
-	
-	for (const person of IMPERATIVE_PERSONS) {
-	
-		const header = document.createElement("div");
-		header.className = "person";
-		header.textContent = person;
-		imperativeGrid.appendChild(header);
-	}
-	
-	for (const person of IMPERATIVE_PERSONS) {
-	
-		const button = document.createElement("button");
-	
-		button.className = "answer-button";
-		button.textContent = "";
-	
-		button.dataset.tense = "imperativo";
-		button.dataset.person = person;
-	
-		button.onclick = function() {
-			selectAnswer(button);
-		};
-	
-		imperativeGrid.appendChild(button);
-	}
-
 	// main grids
-	for (let i=1; i<=4; i += 1) {
+	for (let i=1; i<=5; i += 1) {
 		let obj;
 		let title;
 		let tenses;
@@ -522,6 +443,10 @@ function displayQuestion() {
 			obj = "congiuntivo-grid";
 			title = "CONGIUNTIVO";
 			tenses = cong_tenses;
+		} else if (i == 5) {
+			obj = "imperativo-grid";
+			title = "IMPERATIVO";
+			tenses = [''];
 		};
 	
 		const Grid = document.getElementById(obj);
@@ -534,7 +459,18 @@ function displayQuestion() {
 		Grid.appendChild(header);
 		
 		// Column headers
-		for (const person of PERSONS) {
+		for (let person of PERSONS) {
+			
+			if (obj == 'imperativo-grid') {
+				if (person == 'io') {
+					Grid.appendChild(document.createElement('div'));
+					continue;
+				} else if (person == 'lui') {
+					person = 'Lei';
+				} else if (person == 'loro') {
+					person = 'Loro';
+				}
+			}
 			const header = document.createElement("div");
 			header.className = "person";
 			header.textContent = person;
@@ -551,14 +487,20 @@ function displayQuestion() {
 			Grid.appendChild(tenseLabel);
 			
 			// make interior buttons
-			for (const person of PERSONS) {    	
+			for (const person of PERSONS) {   
+		
+				// skip 'io' in imperativo case
+				if (person == 'io' && obj == 'imperativo-grid'){
+					Grid.appendChild(document.createElement('div'));
+					continue;
+				}
+				
 				Grid.appendChild(buttonMaker(person, tense, obj));
 			}
 		}
 		
-		// extra row
-		const empty = document.createElement('p');
-		Grid.appendChild(empty);
+		// extra row for space below table
+		Grid.appendChild(document.createElement('p'));
 	}
 
 } // ending displayQuestion
