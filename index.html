@@ -60,7 +60,7 @@ Title and CSS:
         .person {
             font-weight: bold;
             font-size: 17px;
-            padding: 8px 2px;
+            padding: 1px 2px;
         }
 
         .tense {
@@ -72,8 +72,8 @@ Title and CSS:
 
         .answer-button {
             width: 100%;
-            height: 20px; // button height
-            //padding: 0;
+            height: 20px; /* button height */
+            /* padding: 0;*/
 
             font-size: 18px;
             
@@ -106,32 +106,32 @@ Title and CSS:
             }
 
             #question {
-                font-size: 27px;
+                font-size: 25px; /* page heading */
             }
     
             #special-grid {
                 display:grid;
                 grid-template-columns: 22% 22% 27% 27%;
-                gap: 3px;
-                width: 100%;
+                gap: 3px; /* entry-to-entry gap*/
+                width: 100%; /* width of entire grid */
                 margin: 0 auto 15px auto;
             }
 
             #imperative-grid {
                 display: grid;
                 grid-template-columns: repeat(5, 1fr);
-                gap: 3px;
-                width: 100%;
+                gap: 3px; /* entry-to-entry gap*/
+                width: 50%; /* width of entire grid */
                 margin: 0 auto 15px auto;
             }
 
             .special-label {
-                font-size: 11px;
+                font-size: 11px; /* infinito, gerundio etc*/
             }
 
             #grid {
                 grid-template-columns:
-                    140px repeat(6, 30px);
+                    140px /* left column */ repeat(6, 30px);
 
                 gap: 3px;
 
@@ -139,21 +139,28 @@ Title and CSS:
             }
 
             .person {
-                font-size: 14px;
+                font-size: 12px; /* column names */
             }
 
             .tense {
-                width:140px;
+                width:100%;
                 font-size: 12px;
                 text-align: right;
                 padding: 0 1px 0 0;
-                //padding-right: 4px;
+                /*padding-right: 4px;*/
             }
 
             .answer-button {
                 height: 20px;
                 width: 100%;
-                font-size: 16px;
+                font-size: 10px; /* check mark */
+            }
+            
+            .main-grids {
+            	display: grid;
+            	gap: 3px;
+            	grid-template-columns: 140px repeat(6, 35px);
+            	width: 100%;
             }
         }
 
@@ -174,9 +181,16 @@ Title and CSS:
     <div id="special-grid"></div>
 
     <div id="imperative-grid"></div>
-
-    <div id="grid"></div>
-
+    
+    <div id="indicativo-grid" class="main-grids"></div>
+    
+    <div id="tempi-composti-grid" class="main-grids"></div>
+    
+    <div id="congiuntivo-grid" class="main-grids"></div>
+    
+    <div id="condizionale-grid" class="main-grids"></div>
+    
+    <div id="imperativo-grid" class="main-grids"></div>
 
     <div id="button-container">
     <button id="check-button" onclick="checkAnswer()">
@@ -227,7 +241,7 @@ const SPECIAL_TENSES = [
     "gerundio",
     "participio presente",
     "participio passato"
-];
+]; //infinito etc
 
 const tenses = [
     //"a test of very long text which is definitely going to run into the right wall please",
@@ -235,17 +249,43 @@ const tenses = [
     "imperfetto indicativo",
     "passato remoto",
     "futuro semplice",
-    "passato prossimo",
-    "trapassato prossimo",
-    "trapassato remoto",
-    "futuro anteriore",
-    "presente congiuntivo",
-    "imperfetto congiuntivo",
-    "passato congiuntivo",
-    "trapassato congiuntivo",
-    "presente condizionale",
-    "passato condizionale"
-    ]
+    //"passato prossimo",
+    //"trapassato prossimo",
+    //"trapassato remoto",
+    //"futuro anteriore",
+    //"presente congiuntivo",
+    //"imperfetto congiuntivo",
+    //"passato congiuntivo",
+    //"trapassato congiuntivo",
+    //"presente condizionale",
+    //"passato condizionale"
+    ]; //should delete
+    
+const indicativo_tenses = [
+	"presente indicativo",
+	"imperfetto indicativo",
+	"passato remoto",
+	"futuro semplice"
+];
+    
+const tempi_composti_tenses = [
+	"passato prossimo",
+	"trapassato prossimo",
+	"trapassato remoto",
+	"futuro anteriore"
+];
+    
+const cong_tenses = [
+	"presente",
+	"imperfetto",
+	"passato",
+	"trapassato"
+];
+    
+const cond_tenses = [
+	"presente",
+	"passato"
+];
 
 
 // ========================================================
@@ -272,12 +312,19 @@ function saveStats() {
     );
 }
 
+function displayTest(disp = 'asdftest') {
+	let div = document.createElement("div");
+	div.id = "p";
+	div.textContent = disp;
+	document.body.appendChild(div);
+}
+
 
 // ========================================================
 // Read database.csv
 // ========================================================
 
-fetch("database.csv", { cache: "no-store" })
+fetch("database.csv")
     .then(response => response.text())
     .then(text => {
 
@@ -331,7 +378,6 @@ fetch("database.csv", { cache: "no-store" })
         console.error(error);
     });
 
-
 // ========================================================
 // Random shuffle (used above when reading 'database.csv')
 // ========================================================
@@ -366,152 +412,157 @@ function displayQuestion() {
         (questionIndex + 1) +
         " / " +
         questions.length +
-        "     Score: " +
-        score;
+        "     Score: " +''
+        //score;
+	
+	//const grid = document.getElementById("grid");
+	const specialGrid = document.getElementById("special-grid");
+	
+	// Remove old grids
+	//grid.innerHTML = "";
+	specialGrid.innerHTML = "";
+	
+	// ----------------------------------------------------
+	// Special forms: infinito, gerundio, participi
+	// ----------------------------------------------------
 
+	function buttonMaker(person, tense, grid) {
+		const button = document.createElement("button");
+		button.className = "answer-button";
+		button.dataset.tense = tense;
+		if (grid == 'congiuntivo-grid') {
+			button.dataset.tense += ' congiuntivo';
+		} else if (grid == 'condizionale-grid') {
+			button.dataset.tense += ' condizionale';
+		}
+		button.dataset.person = person;
+	
+		button.onclick = function() {
+			selectAnswer(button);
+		};
+    
+		return button
+	}
 
-const grid = document.getElementById("grid");
-const specialGrid = document.getElementById("special-grid");
+	for (const tense of SPECIAL_TENSES) {
+	
+		const item = document.createElement("div");
+		item.className = "special-item";
+	
+		// Label
+		const label = document.createElement("div");
+		label.className = "special-label";
+		label.textContent = tense;
+	
+		item.appendChild(label);
+	
+		// Button
+		const button = document.createElement("button");
+		button.className = "answer-button";
+		button.textContent = "";
+	
+		button.dataset.tense = tense;
+		button.dataset.person = "-";
+	
+		button.onclick = function() {
+			selectAnswer(button);
+		};
+	
+		item.appendChild(button);
+		specialGrid.appendChild(item);
+	}
 
-// Remove old grids
-grid.innerHTML = "";
-specialGrid.innerHTML = "";
+	// imperative grid
+	const imperativeGrid = document.getElementById("imperative-grid");
+	imperativeGrid.innerHTML = "";
+	
+	for (const person of IMPERATIVE_PERSONS) {
+	
+		const header = document.createElement("div");
+		header.className = "person";
+		header.textContent = person;
+		imperativeGrid.appendChild(header);
+	}
+	
+	for (const person of IMPERATIVE_PERSONS) {
+	
+		const button = document.createElement("button");
+	
+		button.className = "answer-button";
+		button.textContent = "";
+	
+		button.dataset.tense = "imperativo";
+		button.dataset.person = person;
+	
+		button.onclick = function() {
+			selectAnswer(button);
+		};
+	
+		imperativeGrid.appendChild(button);
+	}
 
-// ----------------------------------------------------
-// Special forms: infinito, gerundio, participi
-// ----------------------------------------------------
+	// main grids
+	for (let i=1; i<=4; i += 1) {
+		let obj;
+		let title;
+		let tenses;
+		if (i == 1) {
+			obj = "indicativo-grid";
+			title = "INDICATIVO";
+			tenses = indicativo_tenses;
+		} else if (i == 2) {
+			obj = "tempi-composti-grid";
+			title = "COMPOSTI";
+			tenses = tempi_composti_tenses;
+		} else if (i == 3) {
+			obj = "condizionale-grid";
+			title = "CONDIZIONALE";
+			tenses = cond_tenses;
+		} else if (i == 4) {
+			obj = "congiuntivo-grid";
+			title = "CONGIUNTIVO";
+			tenses = cong_tenses;
+		};
+	
+		const Grid = document.getElementById(obj);
+		Grid.innerHTML = ""; // make sure it's initialized
+		
+		// Table title (upper left entry)
+		const header = document.createElement("div");
+		header.className="tense";
+		header.textContent = title;
+		Grid.appendChild(header);
+		
+		// Column headers
+		for (const person of PERSONS) {
+			const header = document.createElement("div");
+			header.className = "person";
+			header.textContent = person;
+			Grid.appendChild(header);
+		}
+		
+		// Rows
+		for (const tense of tenses) {
+		
+			// Make row header
+			const tenseLabel = document.createElement("div");
+			tenseLabel.className = "tense";
+			tenseLabel.textContent = tense;
+			Grid.appendChild(tenseLabel);
+			
+			// make interior buttons
+			for (const person of PERSONS) {    	
+				Grid.appendChild(buttonMaker(person, tense, obj));
+			}
+		}
+		
+		// extra row
+		const empty = document.createElement('p');
+		Grid.appendChild(empty);
+	}
 
-for (const tense of SPECIAL_TENSES) {
+} // ending displayQuestion
 
-    const item = document.createElement("div");
-    item.className = "special-item";
-
-    // Label
-    const label = document.createElement("div");
-    label.className = "special-label";
-    label.textContent = tense;
-
-    item.appendChild(label);
-
-    // Button
-    const button = document.createElement("button");
-    button.className = "answer-button";
-    button.textContent = "";
-
-    button.dataset.tense = tense;
-    button.dataset.person = "-";
-
-    button.onclick = function() {
-        selectAnswer(button);
-    };
-
-    item.appendChild(button);
-    specialGrid.appendChild(item);
-}
-
-const imperativeGrid = document.getElementById("imperative-grid");
-imperativeGrid.innerHTML = "";
-
-for (const person of IMPERATIVE_PERSONS) {
-
-    const header = document.createElement("div");
-    header.className = "person";
-    header.textContent = person;
-    imperativeGrid.appendChild(header);
-}
-
-for (const person of IMPERATIVE_PERSONS) {
-
-    const button = document.createElement("button");
-
-    button.className = "answer-button";
-    button.textContent = "";
-
-    button.dataset.tense = "imperativo";
-    button.dataset.person = person;
-
-    button.onclick = function() {
-        selectAnswer(button);
-    };
-
-    imperativeGrid.appendChild(button);
-}
-
-// ----------------------------------------------------
-// Main grid: person headings
-// ----------------------------------------------------
-
-// Empty upper-left corner
-const empty = document.createElement("div");
-grid.appendChild(empty);
-
-// Column headings
-for (const person of PERSONS) {
-
-    const header = document.createElement("div");
-
-    header.className = "person";
-
-    let displayPerson = person;
-
-    if (person === "lui") {
-        displayPerson = DISPLAY_PERSONS.lui[
-            Math.floor(Math.random() * DISPLAY_PERSONS.lui.length)
-        ];
-    }
-
-    if (person === "loro") {
-        displayPerson = DISPLAY_PERSONS.loro[
-            Math.floor(Math.random() * DISPLAY_PERSONS.loro.length)
-        ];
-    }
-
-    header.textContent = displayPerson;
-
-    grid.appendChild(header);
-}
-
-// ----------------------------------------------------
-// Main grid rows
-// ----------------------------------------------------
-
-for (const tense of tenses) {
-
-    // Tense label
-    const tenseLabel = document.createElement("div");
-
-    tenseLabel.className = "tense";
-    tenseLabel.textContent = tense;
-
-    grid.appendChild(tenseLabel);
-
-    // Don't create an "io" button for imperativo
-    for (const person of PERSONS) {
-
-        if (tense === "imperativo" && person === "io") {
-            // Empty cell instead of a button
-            const emptyCell = document.createElement("div");
-            grid.appendChild(emptyCell);
-            continue;
-        }
-
-        const button = document.createElement("button");
-
-        button.className = "answer-button";
-        button.textContent = "";
-
-        button.dataset.tense = tense;
-        button.dataset.person = person;
-
-        button.onclick = function() {
-            selectAnswer(button);
-        };
-
-        grid.appendChild(button);
-    }
-}
-
-}
 
 
 // ========================================================
@@ -540,7 +591,6 @@ function checkAnswer() {
 
         });
 
-
     // Convert both to strings so we can compare sets
     const correctSet = new Set(
         correctAnswers.map(
@@ -554,14 +604,14 @@ function checkAnswer() {
         )
     );
 
-
+	//displayTest(correctSet.values().next().value)
+	
     // Check that the sets are identical
     const correct =
         correctSet.size === selectedSet.size &&
         [...correctSet].every(
             x => selectedSet.has(x)
         );
-
 
     if (correct) {
 
@@ -601,7 +651,6 @@ function checkAnswer() {
     // Turn all correct answers green
     document.querySelectorAll(".answer-button")
         .forEach(button => {
-
             const key =
                 button.dataset.tense + "|||" +
                 button.dataset.person;
@@ -612,7 +661,7 @@ function checkAnswer() {
                 button.disabled = true;
             }
         });
-}
+	}
 }
 
 function resetStats() {
@@ -655,6 +704,7 @@ function nextQuestion() {
 
     questionIndex++;
 
+	// display on final screen
     if (questionIndex >= questions.length) {
 
         document.getElementById("question").textContent =
@@ -666,7 +716,7 @@ function nextQuestion() {
             " / " +
             questions.length;
 
-        document.getElementById("grid").innerHTML = "";
+        //document.getElementById("grid").innerHTML = "";
 
         document.getElementById("next-button").style.display =
             "none";
