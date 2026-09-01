@@ -152,35 +152,50 @@
 
 	<!-- Display the main items, defined below in script-->
 
-    <div id="question"></div>
-
-    <!-- <div id="score"></div>-->
-
-    <div id="special-grid"></div>
-    
-    <div id="indicativo-grid" class="main-grids"></div>
-    
-    <div id="tempi-composti-grid" class="main-grids"></div>
-    
-    <div id="congiuntivo-grid" class="main-grids"></div>
-    
-    <div id="condizionale-grid" class="main-grids"></div>
-    
-    <div id="imperativo-grid" class="main-grids"></div>
-
-    <div id="button-container">
-    <button id="check-button" onclick="checkAnswer()">
-        Check Answer
-    </button>
-
-    <button id="next-button" onclick="nextQuestion()">
-        Next question
-    </button>
-
-    <button id="reset-button" onclick="resetStats()">
-        Reset statistics
-    </button>
-    </div>
+	<div id="selection-screen1">
+	
+		<h2>Select verbs</h2>
+		<div id="verb-selection"></div>
+		
+		<!--<h2>Select tenses</h2>
+		<div id="tense-selection"></div>-->
+		
+		<br>
+		<!--<button onclick="startQuiz()">Start</button>-->
+		<button onclick="makeSelectionScreen2()">Make Selection</button>
+	
+	</div>
+	
+	<div id="selection-screen2" style="display:none;">
+		<h2> Select tenses</h2>
+		<div id="tense-selection"></div>
+		<button onclick="startQuiz()">Make Selection and Start</button>
+	</div>
+	
+	<div id="quiz-screen" style="display:none;">
+		<div id="question"></div>
+		<!-- <div id="score"></div>-->
+		<div id="special-grid"></div>
+		<div id="indicativo-grid" class="main-grids"></div>
+		<div id="tempi-composti-grid" class="main-grids"></div>
+		<div id="congiuntivo-grid" class="main-grids"></div>    
+		<div id="condizionale-grid" class="main-grids"></div>
+		<div id="imperativo-grid" class="main-grids"></div>
+	
+		<div id="button-container">
+		<button id="check-button" onclick="checkAnswer()">
+			Check Answer
+		</button>
+	
+		<button id="next-button" onclick="nextQuestion()">
+			Next question
+		</button>
+	
+		<button id="reset-button" onclick="resetStats()">
+			Reset statistics
+		</button>
+		</div>
+	</div>
 
 
 <script>
@@ -190,15 +205,11 @@
 // Settings
 // ========================================================
 
-const TENSES = [
-	'presente indicativo',
-	'imperfetto indicativo',
-	'passato remoto',
-	'passato prossimo',
-	'trapassato prossimo',
-	'trapassato remoto'
-];
-const VERBS = ['avere'];
+// const TENSES = ['presente indicativo', 'imperfetto indicativo'];
+// const VERBS = ['essere'];
+
+let TENSES = [];
+let VERBS = [];
 
 const PERSONS = [
     "io",
@@ -208,11 +219,6 @@ const PERSONS = [
     "voi",
     "loro",
 ];
-
-const DISPLAY_PERSONS = {
-    lui: ["lui", "lei", "Lei", "egli"],
-    loro: ["loro", "Loro", "essi"]
-};
 
 const SPECIAL_TENSES = [
     "infinito",
@@ -236,15 +242,15 @@ const tempi_composti_tenses = [
 ];
     
 const cong_tenses = [
-	"presente",
-	"imperfetto",
-	"passato",
-	"trapassato"
+	"presente congiuntivo",
+	"imperfetto congiuntivo",
+	"passato congiuntivo",
+	"trapassato congiuntivo"
 ];
     
 const cond_tenses = [
-	"presente",
-	"passato"
+	"presente condizionale",
+	"passato condizionale"
 ];
 
 
@@ -284,7 +290,7 @@ function displayTest(disp = 'asdftest') {
 
 let questions = [];
 
-fetch("database.csv")
+fetch("database.csv", {cache: "no-store"})
     .then(response => response.text())
     .then(text => {
 
@@ -317,6 +323,9 @@ fetch("database.csv")
             });
         }
         
+        makeSelectionScreen1();
+        
+        /*
         // only include indicated tenses
         questions = questions.filter(x => TENSES.includes(x.tense));
         
@@ -338,6 +347,7 @@ fetch("database.csv")
 		}
 
         displayQuestion();
+        */
 
     })
     .catch(error => {
@@ -349,22 +359,173 @@ fetch("database.csv")
 
         console.error(error);
     });
+    
+    
+function dispTenses(tenses, document, tenseDiv, title) {
+
+	heading = document.createElement("h4");
+    heading.textContent = title;
+    tenseDiv.appendChild(heading);
+    
+	for (const tense of tenses) {
+
+        const label = document.createElement("label");
+
+        const checkbox = document.createElement("input");
+
+        checkbox.type = "checkbox";
+        checkbox.value = tense;
+        
+        checkbox.className = "tense-checkbox";
+
+        label.appendChild(checkbox);
+        label.append(" " + tense);
+
+        tenseDiv.appendChild(label);
+        tenseDiv.appendChild(document.createElement("br"));
+    }
+}
+    
+    
+function makeSelectionScreen1() {
+
+    const verbs = [...new Set(
+        questions.map(q => q.verb)
+    )];
+
+    const tenses = [...new Set(
+        questions.map(q => q.tense)
+    )];
+
+
+    // -------------------------
+    // Verbs
+    // -------------------------
+
+    const verbDiv = document.getElementById("verb-selection");
+
+    for (const verb of verbs) {
+
+        const label = document.createElement("label");
+
+        const checkbox = document.createElement("input");
+
+        checkbox.type = "checkbox";
+        checkbox.value = verb;
+        checkbox.className = "verb-checkbox";
+
+        label.appendChild(checkbox);
+        label.append(" " + verb);
+
+        verbDiv.appendChild(label);
+        verbDiv.appendChild(document.createElement("br"));
+    }
+
+
+    // -------------------------
+    // Tenses
+    // -------------------------
+
+    /*const tenseDiv = document.getElementById("tense-selection");
+    dispTenses(SPECIAL_TENSES, document, tenseDiv, '');
+    dispTenses(indicativo_tenses, document, tenseDiv, 'Indicativo');
+    dispTenses(tempi_composti_tenses, document, tenseDiv, 'Tempi composti');
+    dispTenses(cong_tenses, document, tenseDiv, 'Congiuntivo');
+    dispTenses(cond_tenses, document, tenseDiv, 'Condizionale');
+    dispTenses(['imperativo'], document, tenseDiv, 'Imperativo');*/
+}
+
+function makeSelectionScreen2() {
+
+	displayTest(0);
+
+	const tenses = [...new Set(
+        questions.map(q => q.tense)
+    )];
+    
+	const tenseDiv = document.getElementById("tense-selection");
+    dispTenses(SPECIAL_TENSES, document, tenseDiv, '');
+    dispTenses(indicativo_tenses, document, tenseDiv, 'Indicativo');
+    dispTenses(tempi_composti_tenses, document, tenseDiv, 'Tempi composti');
+    dispTenses(cong_tenses, document, tenseDiv, 'Congiuntivo');
+    dispTenses(cond_tenses, document, tenseDiv, 'Condizionale');
+    dispTenses(['imperativo'], document, tenseDiv, 'Imperativo');
+}
+
+
+function startQuiz() {
+
+    VERBS = [...document.querySelectorAll(".verb-checkbox:checked")]
+        .map(x => x.value);
+
+    TENSES = [...document.querySelectorAll(".tense-checkbox:checked")]
+        .map(x => x.value);
+
+
+    if (VERBS.length === 0) {
+        alert("Select at least one verb.");
+        return;
+    }
+
+    if (TENSES.length === 0) {
+        alert("Select at least one tense.");
+        return;
+    }
+
+
+    questions = questions.filter(q =>
+        VERBS.includes(q.verb) &&
+        TENSES.includes(q.tense)
+    );
+    
+    for (const tenseee of TENSES) {
+    	displayTest(tenseee);
+    }
+
+
+    if (questions.length === 0) {
+        alert("No questions found for those selections.");
+        return;
+    }
+
+
+    // Randomize question order
+    for (let i = questions.length - 1; i > 0; i--) {
+
+        const j = Math.floor(Math.random() * (i + 1));
+
+        [questions[i], questions[j]] =
+            [questions[j], questions[i]];
+    }
+
+
+    questionIndex = 0;
+
+    document.getElementById("selection-screen1").style.display = "none";
+    document.getElementById("quiz-screen").style.display = "block";
+
+    displayQuestion();
+}
 
 
 function buttonMaker(person, tense, grid) {
 	const button = document.createElement("button");
 	button.className = "answer-button";
 	button.dataset.tense = tense;
-	if (grid == 'congiuntivo-grid') {
+	/*if (grid == 'congiuntivo-grid') {
 		button.dataset.tense += ' congiuntivo';
 	} else if (grid == 'condizionale-grid') {
 		button.dataset.tense += ' condizionale';
-	}
+	}*/
 	button.dataset.person = person;
 
 	button.onclick = function() {
 		selectAnswer(button);
 	};
+	
+	//displayTest("TENSE" + tense);
+	
+	displayTest(button.dataset.tense + "|||" + button.dataset.person);
 	
 	if (!TENSES.includes(tense)) {
 		button.disabled = true;
@@ -387,23 +548,13 @@ function displayQuestion() {
 
     document.getElementById("question").textContent =
         q.form + " (" + q.verb + ")";
-
-    /*document.getElementById("score").textContent =
-        "Question " +
-        (questionIndex + 1) +
-        " / " +
-        questions.length +
-        "     Score: " +''
-        //score;*/
 	
+	
+	/*
+	// special grid
 	const specialGrid = document.getElementById("special-grid");
 	
-	// Remove old grids
 	specialGrid.innerHTML = "";
-	
-	// ----------------------------------------------------
-	// Special forms: infinito, gerundio, participi
-	// ----------------------------------------------------
 
 	for (const tense of SPECIAL_TENSES) {
 	
@@ -432,12 +583,18 @@ function displayQuestion() {
 		item.appendChild(button);
 		specialGrid.appendChild(item);
 	}
+	*/
 
 	// main grids
-	for (let i=1; i<=5; i += 1) {
+	for (let i=0; i<=5; i += 1) {
 		let obj;
 		let title;
 		let tenses;
+		if (i == 0) {
+			obj = 'special-grid';
+			title = '';
+			tenses = '';
+		}
 		if (i == 1) {
 			obj = "indicativo-grid";
 			title = "INDICATIVO";
@@ -457,7 +614,7 @@ function displayQuestion() {
 		} else if (i == 5) {
 			obj = "imperativo-grid";
 			title = "IMPERATIVO";
-			tenses = [''];
+			tenses = ['imperativo'];
 		};
 	
 		const Grid = document.getElementById(obj);
@@ -467,43 +624,96 @@ function displayQuestion() {
 		const header = document.createElement("div");
 		header.className="tense";
 		header.textContent = title;
-		Grid.appendChild(header);
+		if (obj != 'special-grid') {
+			Grid.appendChild(header);
+		}
 		
 		// Column headers
 		for (let person of PERSONS) {
 			
-			if (obj == 'imperativo-grid') {
+			
+			const header = document.createElement('div');
+			header.className = 'person';
+			header.textContent = person;
+			
+			if (obj == 'imperativo-grid'){
+				if (person == 'io'){
+					header.textContent = '';
+				} else if (person == 'lui') {
+					header.textContent = 'Lei';
+				} else if (person == 'loro') {
+					header.textContent = 'Loro';
+				}
+			} else if (obj == 'special-grid')
+			{
+				if (person == 'io') {
+					header.textContent = SPECIAL_TENSES[0];
+				} else if (person == 'tu') {
+					header.textContent = SPECIAL_TENSES[1];
+				} else if (person == 'lui') {
+					header.textContent = SPECIAL_TENSES[2];
+				} else if (person == 'noi') {
+					header.textContent = SPECIAL_TENSES[3];
+				} else {
+					continue
+				}
+			}
+			
+			/*if (obj == 'imperativo-grid') {
 				if (person == 'io') {
 					Grid.appendChild(document.createElement('div'));
 					continue;
-				} else if (person == 'lui') {
-					person = 'Lei';
-				} else if (person == 'loro') {
-					person = 'Loro';
 				}
 			}
+			
 			const header = document.createElement("div");
 			header.className = "person";
-			header.textContent = person;
+			if (obj == 'imperativo-grid' && person == 'lui') {
+				header.textContent = 'Lei';
+			} else if (obj == 'imperativo-grid' && person == 'loro') {
+				header.textContent = 'Loro';
+			} else {
+				header.textContent = person;
+			}*/
 			Grid.appendChild(header);
 		}
 		
 		// Rows
+		if (obj == 'special-grid') {
+			Grid.appendChild(buttonMaker('-', SPECIAL_TENSES[0], obj));
+			Grid.appendChild(buttonMaker('-', SPECIAL_TENSES[1], obj));
+			Grid.appendChild(buttonMaker('-', SPECIAL_TENSES[2], obj));
+			Grid.appendChild(buttonMaker('-', SPECIAL_TENSES[3], obj));
+		}
 		for (const tense of tenses) {
 		
 			// Make row header
-			const tenseLabel = document.createElement("div");
-			tenseLabel.className = "tense";
-			tenseLabel.textContent = tense;
-			Grid.appendChild(tenseLabel);
+			if (tense != 'imperativo') {
+				const tenseLabel = document.createElement("div");
+				tenseLabel.className = "tense";
+				tenseLabel.textContent = tense;
+				Grid.appendChild(tenseLabel);
+			} else {
+				const tenseLabel = document.createElement("div");
+				tenseLabel.className = "tense";
+				tenseLabel.textContent = '';
+				Grid.appendChild(tenseLabel);
+			}
 			
 			// make interior buttons
 			for (const person of PERSONS) {   
 		
-				// skip 'io' in imperativo case
-				if (person == 'io' && obj == 'imperativo-grid'){
-					Grid.appendChild(document.createElement('div'));
-					continue;
+				if (obj == 'imperativo-grid') {
+					if (person == 'io') {
+						Grid.appendChild(document.createElement('div'));
+						continue;
+					} else if (person == 'lui') {
+						Grid.appendChild(buttonMaker('Lei', tense, obj));
+						continue;
+					} else if (person == 'loro') {
+						Grid.appendChild(buttonMaker('Loro', tense, obj));
+						continue;
+					}
 				}
 				
 				Grid.appendChild(buttonMaker(person, tense, obj));
@@ -565,6 +775,8 @@ function checkAnswer() {
         [...correctSet].every(
             x => selectedSet.has(x)
         );
+        
+    displayTest(correctSet.values().next().value);
 
     if (correct) {
 
