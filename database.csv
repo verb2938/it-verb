@@ -16,6 +16,36 @@ avere;ebbe;lui;passato remoto
 avere;avemmo;noi;passato remoto
 avere;aveste;voi;passato remoto
 avere;ebbero;loro;passato remoto
+avere;avrò;io;futuro semplice
+avere;avrai;tu;futuro semplice
+avere;avrà;lui;futuro semplice
+avere;avremo;noi;futuro semplice
+avere;avrete;voi;futuro semplice
+avere;avranno;loro;futuro semplice
+avere;abbia;io;presente congiuntivo
+avere;abbia;tu;presente congiuntivo
+avere;abbia;lui;presente congiuntivo
+avere;abbiamo;noi;presente congiuntivo
+avere;abbiate;voi;presente congiuntivo
+avere;abbiano;loro;presente congiuntivo
+avere;avessi;io;imperfetto congiuntivo
+avere;avessi;tu;imperfetto congiuntivo
+avere;avesse;lui;imperfetto congiuntivo
+avere;avessimo;noi;imperfetto congiuntivo
+avere;aveste;voi;imperfetto congiuntivo
+avere;avessero;loro;imperfetto congiuntivo
+avere;avrei;io;presente condizionale
+avere;avresti;tu;presente condizionale
+avere;avrebbe;lui;presente condizionale
+avere;avremmo;noi;presente condizionale
+avere;avreste;voi;presente condizionale
+avere;avrebbero;loro;presente condizionale
+avere;abbi;tu;imperativo
+avere;abbia;Lei;imperativo
+avere;abbiamo;noi;imperativo
+avere;abbiate;voi;imperativo
+avere;abbiano;Loro;imperativo
+avere;avendo;-;gerundio
 avere;avuto;-;participio passato
 avere;ho avuto;io;passato prossimo
 avere;hai avuto;tu;passato prossimo
@@ -35,3 +65,118 @@ avere;ebbe avuto;lui;trapassato remoto
 avere;avemmo avuto;noi;trapassato remoto
 avere;aveste avuto;voi;trapassato remoto
 avere;ebbero avuto;loro;trapassato remoto
+avere;avrò avuto;io;futuro anteriore
+avere;avrai avuto;tu;futuro anteriore
+avere;avrà avuto;lui;futuro anteriore
+avere;avremo avuto;noi;futuro anteriore
+avere;avrete avuto;voi;futuro anteriore
+avere;avranno avuto;loro;futuro anteriore
+avere;abbia avuto;io;passato congiuntivo
+avere;abbia avuto;tu;passato congiuntivo
+avere;abbia avuto;lui;passato congiuntivo
+avere;abbiamo avuto;noi;passato congiuntivo
+avere;abbiate avuto;voi;passato congiuntivo
+avere;abbiano avuto;loro;passato congiuntivo
+avere;avessi avuto;io;trapassato congiuntivo
+avere;avessi avuto;tu;trapassato congiuntivo
+avere;avesse avuto;lui;trapassato congiuntivo
+avere;avessimo avuto;noi;trapassato congiuntivo
+avere;aveste avuto;voi;trapassato congiuntivo
+avere;avessero avuto;loro;trapassato congiuntivo
+avere;avrei avuto;io;passato condizionale
+avere;avresti avuto;tu;passato condizionale
+avere;avrebbe avuto;lui;passato condizionale
+avere;avremmo avuto;noi;passato condizionale
+avere;avreste avuto;voi;passato condizionale
+avere;avrebbero avuto;loro;passato condizionale
+essere;sono;io;presente indicativo
+essere;sei;tu;presente indicativo
+essere;è;lui;presente indicativo
+essere;siamo;noi;presente indicativo
+essere;siete;voi;presente indicativo
+essere;sono;loro;presente indicativo
+essere;ero;io;imperfetto indicativo
+essere;eri;tu;imperfetto indicativo
+essere;era;lui;imperfetto indicativo
+essere;eravamo;noi;imperfetto indicativo
+essere;eravate;voi;imperfetto indicativo
+essere;erano;loro;imperfetto indicativo
+essere;fui;io;passato remoto indicativo
+essere;fosti;tu;passato remoto indicativo
+essere;fu;lui;passato remoto indicativo
+essere;fummo;noi;passato remoto indicativo
+essere;foste;voi;passato remoto indicativo
+essere;furono;loro;passato remoto indicativo
+essere;sarò;io;futuro indicativo
+essere;sarai;tu;futuro indicativo
+essere;sarà;lui;futuro indicativo
+essere;saremo;noi;futuro indicativo
+essere;sarete;voi;futuro indicativo
+essere;saranno;loro;futuro indicativo
+essere;sia;io;presente congiuntivo
+essere;sia;tu;presente congiuntivo
+essere;sia;lui;presente congiuntivo
+essere;siamo;noi;presente congiuntivo
+essere;siate;voi;presente congiuntivo
+essere;siano;loro;presente congiuntivo
+essere;fossi;io;imperfetto congiuntivo
+essere;fossi;tu;imperfetto congiuntivo
+essere;fosse;lui;imperfetto congiuntivo
+essere;fossimo;noi;imperfetto congiuntivo
+essere;foste;voi;imperfetto congiuntivo
+essere;fossero;loro;imperfetto congiuntivo
+essere;sarei;io;presente condizionale
+essere;saresti;tu;presente condizionale
+essere;sarebbe;lui;presente condizionale
+essere;saremmo;noi;presente condizionale
+essere;sareste;voi;presente condizionale
+essere;sarebbero;loro;presente condizionale
+essere;sii;tu;imperativo
+essere;sia;Lei;imperativo
+essere;siamo;noi;imperativo
+essere;siete;voi;imperativo
+essere;siano;Loro;imperativo
+essere;essendo;-;gerundio
+essere;stato;-;participio passato
+essere;sono stato;io;passato prossimo
+essere;sei stato;tu;passato prossimo
+essere;è stato;lui;passato prossimo
+essere;siamo stato;noi;passato prossimo
+essere;siete stato;voi;passato prossimo
+essere;sono stato;loro;passato prossimo
+essere;ero stato;io;trapassato prossimo
+essere;eri stato;tu;trapassato prossimo
+essere;era stato;lui;trapassato prossimo
+essere;eravamo stato;noi;trapassato prossimo
+essere;eravate stato;voi;trapassato prossimo
+essere;erano stato;loro;trapassato prossimo
+essere;fui stato;io;trapassato remoto
+essere;fosti stato;tu;trapassato remoto
+essere;fu stato;lui;trapassato remoto
+essere;fummo stato;noi;trapassato remoto
+essere;foste stato;voi;trapassato remoto
+essere;furono stato;loro;trapassato remoto
+essere;sarò stato;io;futuro anteriore
+essere;sarai stato;tu;futuro anteriore
+essere;sarà stato;lui;futuro anteriore
+essere;saremo stato;noi;futuro anteriore
+essere;sarete stato;voi;futuro anteriore
+essere;saranno stato;loro;futuro anteriore
+essere;sia stato;io;passato congiuntivo
+essere;sia stato;tu;passato congiuntivo
+essere;sia stato;lui;passato congiuntivo
+essere;siamo stato;noi;passato congiuntivo
+essere;siate stato;voi;passato congiuntivo
+essere;siano stato;loro;passato congiuntivo
+essere;fossi stato;io;trapassato congiuntivo
+essere;fossi stato;tu;trapassato congiuntivo
+essere;fosse stato;lui;trapassato congiuntivo
+essere;fossimo stato;noi;trapassato congiuntivo
+essere;foste stato;voi;trapassato congiuntivo
+essere;fossero stato;loro;trapassato congiuntivo
+essere;sarei stato;io;passato condizionale
+essere;saresti stato;tu;passato condizionale
+essere;sarebbe stato;lui;passato condizionale
+essere;saremmo stato;noi;passato condizionale
+essere;sareste stato;voi;passato condizionale
+essere;sarebbero stato;loro;passato condizionale
