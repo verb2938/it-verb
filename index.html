@@ -109,7 +109,7 @@
                 grid-template-columns: 22% 22% 27% 27%;
                 gap: 3px; /* entry-to-entry gap*/
                 width: 100%; /* width of entire grid */
-                margin: 0 auto 15px auto;
+                margin: 0 auto 1px auto;
             }
 
             .special-label {
@@ -169,6 +169,7 @@
 	<div id="selection-screen2" style="display:none;">
 		<h2> Select tenses</h2>
 		<div id="tense-selection"></div>
+		<h2></h2>
 		<button onclick="startQuiz()">Make Selection and Start</button>
 	</div>
 	
@@ -176,10 +177,15 @@
 		<div id="question"></div>
 		<!-- <div id="score"></div>-->
 		<div id="special-grid"></div>
+		<br><br>
 		<div id="indicativo-grid" class="main-grids"></div>
+		<br><br>
 		<div id="tempi-composti-grid" class="main-grids"></div>
-		<div id="congiuntivo-grid" class="main-grids"></div>    
+		<br><br>
+		<div id="congiuntivo-grid" class="main-grids"></div> 
+		<br><br>
 		<div id="condizionale-grid" class="main-grids"></div>
+		<br><br>
 		<div id="imperativo-grid" class="main-grids"></div>
 	
 		<div id="button-container">
@@ -384,6 +390,8 @@ function dispTenses(tenses, document, tenseDiv, title) {
         tenseDiv.appendChild(label);
         tenseDiv.appendChild(document.createElement("br"));
     }
+    
+    
 }
     
     
@@ -393,14 +401,9 @@ function makeSelectionScreen1() {
         questions.map(q => q.verb)
     )];
 
-    const tenses = [...new Set(
+    /*const tenses = [...new Set(
         questions.map(q => q.tense)
-    )];
-
-
-    // -------------------------
-    // Verbs
-    // -------------------------
+    )];*/
 
     const verbDiv = document.getElementById("verb-selection");
 
@@ -421,27 +424,13 @@ function makeSelectionScreen1() {
         verbDiv.appendChild(document.createElement("br"));
     }
 
-
-    // -------------------------
-    // Tenses
-    // -------------------------
-
-    /*const tenseDiv = document.getElementById("tense-selection");
-    dispTenses(SPECIAL_TENSES, document, tenseDiv, '');
-    dispTenses(indicativo_tenses, document, tenseDiv, 'Indicativo');
-    dispTenses(tempi_composti_tenses, document, tenseDiv, 'Tempi composti');
-    dispTenses(cong_tenses, document, tenseDiv, 'Congiuntivo');
-    dispTenses(cond_tenses, document, tenseDiv, 'Condizionale');
-    dispTenses(['imperativo'], document, tenseDiv, 'Imperativo');*/
 }
 
 function makeSelectionScreen2() {
 
-	displayTest(0);
-
-	const tenses = [...new Set(
+	/*const tenses = [...new Set(
         questions.map(q => q.tense)
-    )];
+    )];*/
     
 	const tenseDiv = document.getElementById("tense-selection");
     dispTenses(SPECIAL_TENSES, document, tenseDiv, '');
@@ -450,6 +439,9 @@ function makeSelectionScreen2() {
     dispTenses(cong_tenses, document, tenseDiv, 'Congiuntivo');
     dispTenses(cond_tenses, document, tenseDiv, 'Condizionale');
     dispTenses(['imperativo'], document, tenseDiv, 'Imperativo');
+    
+    document.getElementById('selection-screen1').style.display = 'none';
+    document.getElementById('selection-screen2').style.display = 'block';
 }
 
 
@@ -477,10 +469,6 @@ function startQuiz() {
         VERBS.includes(q.verb) &&
         TENSES.includes(q.tense)
     );
-    
-    for (const tenseee of TENSES) {
-    	displayTest(tenseee);
-    }
 
 
     if (questions.length === 0) {
@@ -501,7 +489,7 @@ function startQuiz() {
 
     questionIndex = 0;
 
-    document.getElementById("selection-screen1").style.display = "none";
+    document.getElementById("selection-screen2").style.display = "none";
     document.getElementById("quiz-screen").style.display = "block";
 
     displayQuestion();
@@ -512,20 +500,12 @@ function buttonMaker(person, tense, grid) {
 	const button = document.createElement("button");
 	button.className = "answer-button";
 	button.dataset.tense = tense;
-	/*if (grid == 'congiuntivo-grid') {
-		button.dataset.tense += ' congiuntivo';
-	} else if (grid == 'condizionale-grid') {
-		button.dataset.tense += ' condizionale';
-	}*/
+
 	button.dataset.person = person;
 
 	button.onclick = function() {
 		selectAnswer(button);
 	};
-	
-	//displayTest("TENSE" + tense);
-	
-	displayTest(button.dataset.tense + "|||" + button.dataset.person);
 	
 	if (!TENSES.includes(tense)) {
 		button.disabled = true;
@@ -594,8 +574,7 @@ function displayQuestion() {
 			obj = 'special-grid';
 			title = '';
 			tenses = '';
-		}
-		if (i == 1) {
+		} else if (i == 1) {
 			obj = "indicativo-grid";
 			title = "INDICATIVO";
 			tenses = indicativo_tenses;
@@ -721,7 +700,7 @@ function displayQuestion() {
 		}
 		
 		// extra row for space below table
-		Grid.appendChild(document.createElement('p'));
+		//Grid.appendChild(document.createElement('p'));
 	}
 
 } // ending displayQuestion
@@ -766,8 +745,6 @@ function checkAnswer() {
             x => x.tense + "|||" + x.person
         )
     );
-
-	//displayTest(correctSet.values().next().value)
 	
     // Check that the sets are identical
     const correct =
@@ -775,8 +752,6 @@ function checkAnswer() {
         [...correctSet].every(
             x => selectedSet.has(x)
         );
-        
-    displayTest(correctSet.values().next().value);
 
     if (correct) {
 
