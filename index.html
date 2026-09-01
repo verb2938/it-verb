@@ -312,6 +312,9 @@ fetch("database.csv")
         
         // only include indicated tenses
         questions = questions.filter(x => TENSES.includes(x.tense));
+        
+        // only include indicated verbs
+        questions = questions.filter(x => VERBS.includes(x.verb));
 
 		// error message
         if (questions.length === 0) {
