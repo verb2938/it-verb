@@ -517,7 +517,29 @@ function makeSelectionScreen1() {
 			if (LANG == 'Français') {
 				verbs = ['être', 'avoir', 'faire', 'aller', 'dire', 'pouvoir', 'vouloir'];
 			} else if (LANG == 'Italiano') {
-				verbs = [...new Set(questions.map(q => q.verb))];
+				// verbs = [...new Set(questions.map(q => q.verb))];
+				verbs = [
+					'essere',
+					'avere',
+					'fare',
+					'dire',
+					'potere',
+					'volere',
+					'sapere',
+					'stare',
+					'dovere',
+					'vedere',
+					'andare',
+					'venire',
+					'dare',
+					'parlare',
+					'trovare',
+					'sentire',
+					'lasciare',
+					'prendere',
+					'guardare',
+					'mettere
+				];
 			}
 
 			const verbDiv = document.getElementById("verb-selection");
