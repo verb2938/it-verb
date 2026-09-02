@@ -184,7 +184,10 @@
 		<!-- <div id="score"></div>-->
 		<div id="special-grid"></div>
 		<br><br>
-		<div id="indicativo-grid" class="main-grids"></div>
+		
+		<div id="main-grids-container"></div>
+		
+		<!--<div id="indicativo-grid" class="main-grids"></div>
 		<br><br>
 		<div id="tempi-composti-grid" class="main-grids"></div>
 		<br><br>
@@ -192,7 +195,7 @@
 		<br><br>
 		<div id="condizionale-grid" class="main-grids"></div>
 		<br><br>
-		<div id="imperativo-grid" class="main-grids"></div>
+		<div id="imperativo-grid" class="main-grids"></div>-->
 	
 		<div id="button-container">
 		<button id="check-button" onclick="checkAnswer()">
@@ -233,30 +236,30 @@ const LANGUAGES = {
             "forme pronominale"
         ],
         tense_groups: {
-            indicatif: [
+            'INDICATIF': [
                 "présent indicatif",
                 "imparfait indicatif",
                 "passé simple",
                 "futur simple"
             ],
-            formes_composees: [
+            'FORMES COMPOSÉES': [
                 "passé composé",
                 "plus-que-parfait",
                 "passé antérieur",
                 "futur antérieur"
             ],
-            subjonctif: [
+            'SUBJONCTIF': [
                 "présent subjonctif",
                 "imparfait subjonctif",
                 "passé subjonctif",
                 "plus-que-parfait subjonctif"
             ],
-            conditionnel: [
+            'CONDITIONNEL': [
                 "présent conditionnel",
                 "passé conditionnel",
                 "passé II conditionnel"
             ],
-            imperatif: [
+            'IMPERATIF': [
                 "présent imperatif",
                 "passé imperatif"
             ]
@@ -274,29 +277,29 @@ const LANGUAGES = {
             "participio passato"
         ],
         tense_groups: {
-            'Indicativo': [
+            'INDICATIVO': [
                 "presente indicativo",
                 "imperfetto indicativo",
                 "passato remoto",
                 "futuro semplice"
             ],
-            'Composti': [
+            'COMPOSTI': [
                 "passato prossimo",
                 "trapassato prossimo",
                 "trapassato remoto",
                 "futuro anteriore"
             ],
-            'Congiuntivo': [
+            'CONGIUNTIVO': [
                 "presente congiuntivo",
                 "imperfetto congiuntivo",
                 "passato congiuntivo",
                 "trapassato congiuntivo"
             ],
-            'Condizionale': [
+            'CONDIZIONALE': [
                 "presente condizionale",
                 "passato condizionale"
             ],
-            'Imperativo': []
+            'IMPERATIVO': []
         }
     },
 };
@@ -507,7 +510,7 @@ function makeSelectionScreen1() {
 			
 			//// FIX THIS LATER
 			if (LANG == 'Français') {
-				verbs = ['avoir', 'pouvoir'];
+				verbs = ['être', 'avoir', 'faire', 'aller', 'dire', 'pouvoir', 'vouloir'];
 			} else if (LANG == 'Italiano') {
 				verbs = [...new Set(questions.map(q => q.verb))];
 			}
@@ -662,9 +665,68 @@ function displayQuestion() {
     for (let tense of LANGUAGES[LANG].special_tenses) {
     	Grid.appendChild(buttonMaker('-', tense, 'special-grid'));
     }
+	// main grids
+	const mainGrids = document.getElementById("main-grids-container");
+	mainGrids.innerHTML = "";
+	
+	for (const [groupName, tenses] of Object.entries(
+		LANGUAGES[LANG].tense_groups
+	)) {
+	
+		// Skip empty groups
+		if (tenses.length === 0) {
+			continue;
+		}
+	
+		const grid = document.createElement("div");
+		grid.className = "main-grids";
+	
+		const gridId = groupName + "-grid";
+		grid.id = gridId;
+	
+		mainGrids.appendChild(grid);
+	
+		// Table title
+		const title = document.createElement("div");
+		title.className = "tense";
+		title.textContent = groupName;
+		grid.appendChild(title);
+	
+		// Column headers
+		for (const person of LANGUAGES[LANG].persons) {
+	
+			const header = document.createElement("div");
+			header.className = "person";
+			header.textContent = person;
+	
+			grid.appendChild(header);
+		}
+	
+		// Rows
+		for (const tense of tenses) {
+	
+			const tenseLabel = document.createElement("div");
+			tenseLabel.className = "tense";
+			tenseLabel.textContent = tense;
+	
+			grid.appendChild(tenseLabel);
+	
+			for (const person of LANGUAGES[LANG].persons) {
+	
+				grid.appendChild(
+					buttonMaker(person, tense, gridId)
+				);
+			}
+		}
+	
+		// Space between grids
+		const spacer = document.createElement("br");
+		mainGrids.appendChild(spacer);
+	}
+
     
 
-	// main grids
+	/*// main grids
 	
 	for (let i=1; i<=5; i += 1) {
 		let obj;
@@ -759,7 +821,7 @@ function displayQuestion() {
 		
 		// extra row for space below table
 		//Grid.appendChild(document.createElement('p'));
-	}
+	}*/
 
 } // ending displayQuestion
 
