@@ -205,6 +205,10 @@
 		<button id="next-button" onclick="nextQuestion()">
 			Next question
 		</button>
+
+		<button id="reset-button" onclick="resetQuiz()">
+			Reset
+		</button>
 	
 		<!--<button id="reset-button" onclick="resetStats()">
 			Reset statistics
@@ -215,7 +219,9 @@
 
 <script>
 
-
+function resetQuiz() {
+    window.location.reload();
+}
 // ========================================================
 // Settings
 // ========================================================
@@ -300,7 +306,7 @@ const LANGUAGES = {
                 "passato condizionale"
             ],
             'IMPERATIVO': [
-            	'imperativo'
+            	'Imperativo'
             ]
         }
     },
