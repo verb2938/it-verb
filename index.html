@@ -440,8 +440,6 @@ function dispTenses(tenses, document, tenseDiv, title) {
 
 function makeSelectionScreen0() {
 
-	displayTest(0);
-
 	const langDiv = document.getElementById("language-selection");
 	
 	for (const lang of Object.keys(LANGUAGES)) {
@@ -472,7 +470,6 @@ function makeSelectionScreen1() {
 	}
 	LANG = LANG[0];
 	
-	displayTest(LANGUAGES[LANG].file);
 	fetch(LANGUAGES[LANG].file, {cache: "no-store"})
 		.then(response => response.text())
 		.then(text => {
