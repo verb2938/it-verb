@@ -299,7 +299,9 @@ const LANGUAGES = {
                 "presente condizionale",
                 "passato condizionale"
             ],
-            'IMPERATIVO': []
+            'IMPERATIVO': [
+            	'Imperativo'
+            ]
         }
     },
 };
@@ -569,7 +571,7 @@ function makeSelectionScreen2() {
     dispTenses(tempi_composti_tenses, document, tenseDiv, 'Tempi composti');
     dispTenses(cong_tenses, document, tenseDiv, 'Congiuntivo');
     dispTenses(cond_tenses, document, tenseDiv, 'Condizionale');*/
-    dispTenses(['imperativo'], document, tenseDiv, 'Imperativo');
+    // dispTenses(['imperativo'], document, tenseDiv, 'Imperativo');
     
     document.getElementById('selection-screen1').style.display = 'none';
     document.getElementById('selection-screen2').style.display = 'block';
@@ -654,21 +656,32 @@ function displayQuestion() {
     const Grid = document.getElementById('special-grid');
     Grid.innerHTML = "";
     for (let tense of LANGUAGES[LANG].special_tenses) {
-    	const header = document.createElement('div');
-    	header.className = 'person';
-    	header.textContent = tense;
-    	Grid.appendChild(header);
+    	if (TENSES.includes(tense)) {
+			const header = document.createElement('div');
+			header.className = 'person';
+			header.textContent = tense;
+			Grid.appendChild(header);
+		} else {
+			Grid.appendChild(document.createElement("div"))
+		}
     }
     for (let tense of LANGUAGES[LANG].special_tenses) {
-    	Grid.appendChild(buttonMaker('-', tense, 'special-grid'));
+    	if (TENSES.includes(tense)) {
+    		Grid.appendChild(buttonMaker('-', tense, 'special-grid'));
+    	} else {
+    		Grid.appendChild(document.createElement("div"))
+    	}
     }
+    
 	// main grids
 	const mainGrids = document.getElementById("main-grids-container");
 	mainGrids.innerHTML = "";
 	
-	for (const [groupName, tenses] of Object.entries(
+	for (let [groupName, tenses] of Object.entries(
 		LANGUAGES[LANG].tense_groups
 	)) {
+	
+		tenses = tenses.filter(t => TENSES.includes(t));
 	
 		// Skip empty groups
 		if (tenses.length === 0) {
